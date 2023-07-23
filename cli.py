@@ -1,0 +1,1 @@
+# An interactive command line interface for ClickHouse database through Python
