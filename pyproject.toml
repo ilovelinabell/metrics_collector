@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "metrics_collector"
+version = "0.1.0"
+description = "Metrics collector driver for network and application monitoring and management."
+authors = [
+    "bublyapplejuice2 <hello@helloworld.com>",
+]
+readme = "README.md"
+repository = "https://github.com/bublyapplejuice2/metrics_collector"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+clickhouse-driver = "0.2.6"
+black = "^23"
+isort = "^5.12"
