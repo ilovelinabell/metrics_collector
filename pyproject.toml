@@ -10,6 +10,11 @@ repository = "https://github.com/bublyapplejuice2/metrics_collector"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-clickhouse-driver = "0.2.6"
+clickhouse-connect = "0.6.8"
+cmd2 = "2.4.3"
 black = "^23"
 isort = "^5.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
