@@ -7,13 +7,13 @@ authors = [
 ]
 readme = "README.md"
 repository = "https://github.com/bublyapplejuice2/metrics_collector"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
-clickhouse-connect = "0.6.8"
+python = "^3.11"
 cmd2 = "2.4.3"
-black = "^23"
-isort = "^5.12"
+black = "^24"
+isort = "^5.13"
 
 [build-system]
 requires = ["poetry-core"]
