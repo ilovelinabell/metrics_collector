@@ -1,5 +1,8 @@
 FROM python:3.11
 
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
+
 RUN apt-get update
 RUN python3 -m venv .venv && \
     . .venv/bin/activate && \
