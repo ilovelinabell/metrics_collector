@@ -1,5 +1,5 @@
 # metrics_collector
-Server metrics collector inside of ClickHouse
+Server metrics collector using cmd2. Currently has support for SATA SMART monitoring using smartctl.
 
 # Dependencies
 Python 3.11
