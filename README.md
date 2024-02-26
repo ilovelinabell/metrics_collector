@@ -1,9 +1,13 @@
 # metrics_collector
-Server metrics collector using cmd2. Currently has support for SATA SMART monitoring using smartctl.
+Server manager using cmd2. 
 
-# Dependencies
-Python 3.11
-Poetry 1.5.1
-cmd2 2.4.3
-black
-isort
+## Supported Features
+ - smartctl SMART monitoring
+ - rsync backup
+
+## Dependencies
+ - Python 3.11
+ - Poetry 1.5.1
+ - cmd2 2.4.3
+ - black
+ - isort
