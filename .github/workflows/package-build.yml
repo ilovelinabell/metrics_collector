@@ -1,0 +1,34 @@
+
+name: Package application
+
+on:
+  push:
+    branches: 
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create venv
+        run: | 
+          sudo apt-get install python3.11 python3.11-venv -y &&
+          python3.11 -m venv .venv &&
+          . .venv/bin/activate
+
+      - name: Install poetry and dependencies
+        run: |
+          pip install poetry==1.8.0 &&
+          poetry config virtualenvs.create false &&
+          poetry install
+
+      - name: Build package
+        run: |
+          poetry build
+          ls -la
