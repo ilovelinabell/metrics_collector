@@ -45,7 +45,7 @@ class MetricsCollector(cmd2.Cmd):
             self.perror("Invalid path")
             return
 
-        self.poutput("Backing up data")
+        self.poutput("Backing up data to " + user_dest)
         if args.dry_run:
             rsync = subprocess.Popen(
                 [

@@ -2,12 +2,16 @@
 name: Docker Build
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: 
+      - deploy
+    types: [closed]
+    
+  workflow_dispatch:
 
 jobs:
   build:
+    if: ${{ github.event.pull_request.merged }} == true
     runs-on: ubuntu-latest
 
     steps:
