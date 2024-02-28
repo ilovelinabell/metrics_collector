@@ -3,8 +3,6 @@ name: Package application
 
 on:
   push:
-    branches: 
-      - master
 
   workflow_dispatch:
 
@@ -13,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Create venv
@@ -32,3 +30,10 @@ jobs:
         run: |
           poetry build
           ls -la
+          cd dist
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: metrics_collector-*.tar.gz
