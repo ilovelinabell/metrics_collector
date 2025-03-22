@@ -50,12 +50,15 @@ class MetricsCollector(cmd2.Cmd):
             rsync = subprocess.Popen(
                 [
                     "rsync",
-                    "-azAXvP",
+                    "-aAXvP",
                     "--delete",
                     "--dry-run",
+                    "--progress",
+                    '-e "/usr/bin/ssh -T -c aes128-ctr -o Compression=no -x"',
                     "--exclude=/dev/*",
                     "--exclude=/proc/*",
                     "--exclude=/sys/*",
+                    "--exclude=/var/tmp/*",
                     "--exclude='swapfile'",
                     "--exclude='lost+found'",
                     "--exclude='.cache'",
@@ -75,11 +78,14 @@ class MetricsCollector(cmd2.Cmd):
                 rsync = subprocess.Popen(
                     [
                         "rsync",
-                        "-azAXvP",
+                        "-aAXvP",
                         "--delete",
+                        "--progress",
+                        "-e", "/usr/bin/ssh -T -c aes128-ctr -o Compression=no -x",
                         "--exclude=/dev/*",
                         "--exclude=/proc/*",
                         "--exclude=/sys/*",
+                        "--exclude=/var/tmp/*",
                         "--exclude='swapfile'",
                         "--exclude='lost+found'",
                         "--exclude='.cache'",
