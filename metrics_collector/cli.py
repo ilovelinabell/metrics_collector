@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import readline
 import re
 import subprocess
 
@@ -9,12 +10,23 @@ import cmd2
 
 
 class MetricsCollector(cmd2.Cmd):
+    PRSYNC_PATH = os.path.join(os.path.dirname(__file__), "prsync")
+    HISTORY_LIMIT = 100
+
     cmd2.Cmd.prompt = "metrics_collector> "
     intro = "Welcome to MetricsCollector. Type help or ? to list commands.\n"
 
     arg_parser = cmd2.Cmd2ArgumentParser()
     arg_parser.add_argument("-d", type=int, help="drive ID")
     arg_parser.add_argument("--dry-run", action="store_true", help="dry run")
+
+    def __init__(self):
+        super().__init__()
+        self.history_file = os.path.join(
+            os.path.expanduser("~"), ".local", "state", "metrics_collector", "history"
+        )
+        self._history_save_error_reported = False
+        self._init_history()
 
     @cmd2.with_argparser(arg_parser)
     def do_status(self, args):
@@ -46,26 +58,30 @@ class MetricsCollector(cmd2.Cmd):
             return
 
         self.poutput("Backing up data to " + user_dest)
+        rsync_env = dict(os.environ)
+        rsync_env["RSYNC_RSH"] = "/usr/bin/ssh -T -c aes128-ctr -o Compression=no -x"
+
         if args.dry_run:
             rsync = subprocess.Popen(
                 [
-                    "rsync",
+                    self.PRSYNC_PATH,
+                    "--parallel=4",
                     "-aAXvP",
                     "--delete",
                     "--dry-run",
                     "--progress",
-                    '-e "/usr/bin/ssh -T -c aes128-ctr -o Compression=no -x"',
                     "--exclude=/dev/*",
                     "--exclude=/proc/*",
                     "--exclude=/sys/*",
                     "--exclude=/var/tmp/*",
-                    "--exclude='swapfile'",
-                    "--exclude='lost+found'",
-                    "--exclude='.cache'",
+                    "--exclude=swapfile",
+                    "--exclude=lost+found",
+                    "--exclude=.cache",
                     "/",
                     str(user_dest),
                 ],
                 stdout=subprocess.PIPE,
+                env=rsync_env,
             )
             while True:
                 line = rsync.stdout.readline().decode("utf-8")
@@ -77,22 +93,23 @@ class MetricsCollector(cmd2.Cmd):
             if confirm == "y":
                 rsync = subprocess.Popen(
                     [
-                        "rsync",
+                        self.PRSYNC_PATH,
+                        "--parallel=4",
                         "-aAXvP",
                         "--delete",
                         "--progress",
-                        "-e", "/usr/bin/ssh -T -c aes128-ctr -o Compression=no -x",
                         "--exclude=/dev/*",
                         "--exclude=/proc/*",
                         "--exclude=/sys/*",
                         "--exclude=/var/tmp/*",
-                        "--exclude='swapfile'",
-                        "--exclude='lost+found'",
-                        "--exclude='.cache'",
+                        "--exclude=swapfile",
+                        "--exclude=lost+found",
+                        "--exclude=.cache",
                         "/",
                         str(user_dest),
                     ],
                     stdout=subprocess.PIPE,
+                    env=rsync_env,
                 )
                 while True:
                     line = rsync.stdout.readline().decode("utf-8")
@@ -101,6 +118,35 @@ class MetricsCollector(cmd2.Cmd):
                     self.poutput(line)
             else:
                 self.poutput("Backup cancelled")
+
+    def postcmd(self, stop, statement):
+        self._save_history()
+        return stop
+
+    def postloop(self):
+        self._save_history()
+        super().postloop()
+
+    def _init_history(self):
+        history_dir = os.path.dirname(self.history_file)
+        os.makedirs(history_dir, exist_ok=True)
+
+        if os.path.isfile(self.history_file):
+            try:
+                readline.read_history_file(self.history_file)
+            except OSError:
+                pass
+
+        readline.set_history_length(self.HISTORY_LIMIT)
+
+    def _save_history(self):
+        try:
+            readline.set_history_length(self.HISTORY_LIMIT)
+            readline.write_history_file(self.history_file)
+        except OSError as ex:
+            if not self._history_save_error_reported:
+                self.perror(f"Unable to save history to {self.history_file}: {ex}")
+                self._history_save_error_reported = True
 
 
 if __name__ == "__main__":
