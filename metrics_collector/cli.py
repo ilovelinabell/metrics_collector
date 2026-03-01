@@ -149,10 +149,14 @@ class MetricsCollector(cmd2.Cmd):
                 self._history_save_error_reported = True
 
 
-if __name__ == "__main__":
+def main():
     import sys
 
     if not os.geteuid() == 0:
         sys.exit("Script must be run as root")
     cli = MetricsCollector()
     sys.exit(cli.cmdloop())
+
+
+if __name__ == "__main__":
+    main()

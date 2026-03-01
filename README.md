@@ -7,15 +7,28 @@ Server manager using cmd2.
 
 ## Dependencies
  - Python 3.11
- - Poetry 1.5.1
+ - uv
  - cmd2 2.4.3
  - black
  - isort
 
- ## Usage
- ```bash
- sudo python3 metrics_collector.py
- ```
+## Setup
+
+```bash
+uv sync
+```
+
+For development tools:
+
+```bash
+uv sync --group dev
+```
+
+## Usage
+
+```bash
+sudo uv run metrics-collector
+```
 
 ## Commands
 

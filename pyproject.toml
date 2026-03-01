@@ -1,17 +1,21 @@
-[tool.poetry]
+[project]
 name = "metrics-collector"
 version = "0.1.0"
-description = ""
-authors = ["bublyapplejuice2 <redact@cornell.edu>"]
-readme = "README.md"
-package-mode = true
+description = "Server manager using cmd2"
+requires-python = ">=3.11"
+dependencies = [
+	"cmd2==2.4.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-cmd2 = "2.4.3"
-black = "^24"
-isort = "^5.13.2"
+[project.scripts]
+metrics-collector = "metrics_collector.cli:main"
+
+[dependency-groups]
+dev = [
+	"black>=24",
+	"isort>=5.13.2",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.24.2"]
+build-backend = "hatchling.build"
